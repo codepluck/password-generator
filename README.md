@@ -17,24 +17,6 @@ Copy the `PasswordGenerator.tsx` file into your React project.
 
 Import and use the `PasswordGenerator` component in your React project:
 
-```tsx
-import PasswordGenerator from "./PasswordGenerator";
-
-export default function App() {
-  return (
-    <section className="flex justify-center items-center h-screen">
-      <PasswordGenerator
-        length={12}
-        includeUppercase
-        includeLowercase
-        includeNumbers
-        includeSymbols
-      />
-    </section>
-  );
-}
-```
-
 ## ⚙️ Props
 
 | Prop Name          | Type    | Default | Description                                 |
