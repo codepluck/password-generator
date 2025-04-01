@@ -1,4 +1,4 @@
-# Password Generator React Plugin
+# Password Generator React Component
 
 A simple and customizable password generator component built for React with TypeScript.
 
@@ -11,24 +11,14 @@ A simple and customizable password generator component built for React with Type
 
 ## 📦 Installation
 
-Install the package via npm:
-
-```sh
-npm install your-package-name
-```
-
-or using yarn:
-
-```sh
-yarn add your-package-name
-```
+Copy the `PasswordGenerator.tsx` file into your React project.
 
 ## 🔧 Usage
 
 Import and use the `PasswordGenerator` component in your React project:
 
 ```tsx
-import PasswordGenerator from "your-package-name";
+import PasswordGenerator from "./PasswordGenerator";
 
 export default function App() {
   return (
@@ -57,7 +47,7 @@ export default function App() {
 
 ## 🛠 Contributing
 
-Feel free to submit issues or pull requests to improve this package.
+Feel free to submit issues or pull requests to improve this component.
 
 ## 📜 License
 
