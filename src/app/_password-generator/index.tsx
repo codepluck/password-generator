@@ -3,8 +3,6 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCheck, Copy, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
 import { PasswordGeneratorProps } from "./types";
@@ -27,7 +25,6 @@ export default function PasswordGenerator({
     const [useNumbers, setUseNumbers] = React.useState(includeNumbers);
     const [useSymbols, setUseSymbols] = React.useState(includeSymbols);
     const inputRef = React.useRef<HTMLInputElement>(null);
-    // Parent state for storePasswords, passed down to child.
 
     // Simple password strength function
     const getPasswordStrength = (pwd: string) => {
