@@ -3,14 +3,13 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
+// import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CheckCheck, Copy, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
-import StoredPasswords from "./_components/password-modal";
-import { PasswordGeneratorProps } from "./_lib/types";
-import { storePassword } from "./_lib/actions";
-import { browserFinterPrint } from "./_lib/utils";
+import { PasswordGeneratorProps } from "./types";
+import { Slider } from "./slider";
+import { Switch } from "./switch";
 
 export default function PasswordGenerator({
     length = 10,
@@ -23,22 +22,12 @@ export default function PasswordGenerator({
     const [password, setPassword] = React.useState("");
     const [passwordLength, setPasswordLength] = React.useState(length);
     const [copied, setCopied] = React.useState(false);
-    const [fingerprint, setFingerprint] = React.useState<string | null>(null);
     const [useLowercase, setUseLowercase] = React.useState(includeLowercase);
     const [useUppercase, setUseUppercase] = React.useState(includeUppercase);
     const [useNumbers, setUseNumbers] = React.useState(includeNumbers);
     const [useSymbols, setUseSymbols] = React.useState(includeSymbols);
     const inputRef = React.useRef<HTMLInputElement>(null);
     // Parent state for storePasswords, passed down to child.
-    const [storePasswords, setStorePasswords] = React.useState("yes");
-
-    React.useEffect(() => {
-        const fetchFingerprint = async () => {
-            const print = await browserFinterPrint();
-            setFingerprint(print);
-        };
-        fetchFingerprint();
-    }, []);
 
     // Simple password strength function
     const getPasswordStrength = (pwd: string) => {
@@ -103,12 +92,10 @@ export default function PasswordGenerator({
             setCopied(true);
             setTimeout(() => {
                 setCopied(false);
-                if (storePasswords === "yes") {
-                    storePassword(fingerprint, password);
-                }
+
             }, 2000);
         });
-    }, [password, passwordLength, storePasswords, fingerprint]);
+    }, [password, passwordLength]);
 
     // Regenerate password on option change
     React.useEffect(() => {
@@ -120,7 +107,12 @@ export default function PasswordGenerator({
     }, [useLowercase, useUppercase, useNumbers, useSymbols, passwordLength, generatePassword]);
 
     const strength = getPasswordStrength(password);
-
+    const sliderColorClass =
+        strength.label === "Weak"
+            ? "bg-red-500"
+            : strength.label === "Intermediate"
+                ? "bg-yellow-500"
+                : "bg-green-500";
     return (
         <section className="w-full max-w-96">
             <Card className="shadow-md h-full rounded">
@@ -128,7 +120,7 @@ export default function PasswordGenerator({
                     <CardTitle>Generate Password</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form className="w-full flex flex-col space-y-4">
+                    <form className="w-full flex flex-col gap-12">
                         {/* Generated Password Display */}
                         <section className="w-full flex flex-col space-y-2">
                             <div className="flex space-x-2">
@@ -150,44 +142,69 @@ export default function PasswordGenerator({
                             {/* Strength Meter */}
                             <div className="flex flex-col space-y-1">
                                 <label className="text-sm">Strength: {strength.label}</label>
-                                <div className="w-full h-2 rounded">
-                                    <div className={`bg-${strength.color} h-full rounded`} style={{ width: "100%" }} />
+
+                                <div className="w-full h-2 rounded bg-muted">
+                                    <div
+                                        className={`h-full rounded transition-all duration-300 ${sliderColorClass}`}
+                                        style={{ width: "100%" }}
+                                    />
                                 </div>
                             </div>
                         </section>
 
                         {/* Password Length Control */}
                         <section className="w-full flex flex-col space-y-2">
-                            <label className="font-medium text-sm">Password Length</label>
+                            <label className="font-medium text-base">Password Length</label>
                             <Slider
                                 value={[passwordLength]}
                                 onValueChange={(value) => setPasswordLength(value[0])}
                                 max={100}
                                 step={1}
-                                className={`border-${strength.color} rounded-lg h-2`}
+                                className={`cursor-move rounded-lg h-2`}
                             />
                         </section>
-
                         {/* Character Options */}
-                        <section className="w-full flex flex-col space-y-2">
-                            <label className="font-medium text-sm">Character Options</label>
-                            <div className="flex flex-col space-y-1">
-                                <label className="flex items-center space-x-2">
-                                    <Checkbox checked={useLowercase} onCheckedChange={(checked) => typeof checked === "boolean" && setUseLowercase(checked)} />
-                                    <span className="text-foreground opacity-80 text-sm">lowercase</span>
-                                </label>
-                                <label className="flex items-center space-x-2">
-                                    <Checkbox checked={useUppercase} onCheckedChange={(checked) => typeof checked === "boolean" && setUseUppercase(checked)} />
+                        <section className="w-full flex flex-col space-y-3">
+                            <label className="font-medium text-base">Character Options</label>
+
+                            <div className="flex flex-col space-y-2">
+
+                                <div className="flex items-center justify-between">
+                                    <span className="text-foreground opacity-80 text-sm">Lowercase</span>
+                                    <Switch
+                                        checked={useLowercase}
+                                        onCheckedChange={(checked) => setUseLowercase(checked)}
+                                        size="sm"
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between">
                                     <span className="text-foreground opacity-80 text-sm">UPPERCASE</span>
-                                </label>
-                                <label className="flex items-center space-x-2">
-                                    <Checkbox checked={useNumbers} onCheckedChange={(checked) => typeof checked === "boolean" && setUseNumbers(checked)} />
-                                    <span className="text-foreground opacity-80 text-sm">Numbers(0-9)</span>
-                                </label>
-                                <label className="flex items-center space-x-2">
-                                    <Checkbox checked={useSymbols} onCheckedChange={(checked) => typeof checked === "boolean" && setUseSymbols(checked)} />
-                                    <span className="text-foreground opacity-80 text-sm">Symbols($%)</span>
-                                </label>
+                                    <Switch
+                                        checked={useUppercase}
+                                        onCheckedChange={(checked) => setUseUppercase(checked)}
+                                        size="sm"
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                    <span className="text-foreground opacity-80 text-sm">Numbers (0-9)</span>
+                                    <Switch
+                                        checked={useNumbers}
+                                        onCheckedChange={(checked) => setUseNumbers(checked)}
+                                        size="sm"
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                    <span className="text-foreground opacity-80 text-sm">Symbols ($%)</span>
+                                    <Switch
+                                        checked={useSymbols}
+                                        onCheckedChange={(checked) => setUseSymbols(checked)}
+                                        size="sm"
+                                    />
+                                </div>
+
                             </div>
                         </section>
 
@@ -195,21 +212,15 @@ export default function PasswordGenerator({
                         <section className="w-full flex items-center justify-center mt-4">
                             <Button
                                 type="button"
-                                className="w-full flex items-center justify-center gap-2 cursor-pointer"
+                                className="group w-full flex items-center justify-center gap-2 cursor-pointer"
                                 onClick={generatePassword}
                             >
-                                <RefreshCcw className="transition-transform duration-300 ease-in-out hover:rotate-180" size={18} />
+                                <RefreshCcw
+                                    size={18}
+                                    className="transition-transform duration-300 ease-in-out group-hover:rotate-180 group-hover:scale-105"
+                                />
                                 Re-Generate
                             </Button>
-                        </section>
-
-                        {/* Pass state down to StoredPasswords component */}
-                        <section className="w-full flex items-center justify-center mt-4">
-                            <StoredPasswords
-                                fingerprint={fingerprint}
-                                storePasswords={storePasswords}
-                                setStorePasswords={setStorePasswords}
-                            />
                         </section>
                     </form>
                 </CardContent>

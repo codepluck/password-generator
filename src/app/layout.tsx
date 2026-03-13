@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
 
-const montserrat = Montserrat({
-  variable: "--font-geist-sans",
+const josefinSans = Josefin_Sans({
+  variable: "--font-josefin",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
-
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,15 +16,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${montserrat.variable}  antialiased`}
-      >
-        <div vaul-drawer-wrapper="" className="bg-background">{children}</div>
+      <body className={`${josefinSans.variable} antialiased`}>
+        <div vaul-drawer-wrapper="" className="bg-background">
+          {children}
+        </div>
 
         <Toaster richColors />
       </body>
