@@ -110,6 +110,12 @@ export default function PasswordGenerator({
             : strength.label === "Intermediate"
                 ? "bg-yellow-500"
                 : "bg-green-500";
+    const strengthTextColor =
+        strength.label === "Weak"
+            ? "text-red-500"
+            : strength.label === "Intermediate"
+                ? "text-yellow-500"
+                : "text-green-500";
     return (
         <section className="w-full max-w-96">
             <Card className="shadow-md h-full rounded">
@@ -151,7 +157,10 @@ export default function PasswordGenerator({
 
                         {/* Password Length Control */}
                         <section className="w-full flex flex-col space-y-2">
-                            <label className="font-medium text-base">Password Length</label>
+                            <label className="font-medium text-base">
+                                Password Length
+                                <span className={`${strengthTextColor} ml-2 text-sm`}>{passwordLength}</span>
+                            </label>
                             <Slider
                                 value={[passwordLength]}
                                 onValueChange={(value) => setPasswordLength(value[0])}
